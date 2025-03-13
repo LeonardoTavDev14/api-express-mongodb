@@ -21,7 +21,9 @@ class UsersControllers {
         password: passwordHash,
       });
 
-      return response.status(200).json(userCreated);
+      return response.status(200).json({
+        message: "Usuário criado com sucesso!",
+      });
     } catch (err) {
       console.error("Erro ao criar usuário", err.message);
       errorResponse(response, 500, "Falha ao capturar requisição");
