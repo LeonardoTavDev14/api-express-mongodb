@@ -14,8 +14,12 @@ const validation = (type, data) => {
       email: Joi.string().email().required(),
       password: Joi.string().required(),
     });
-  } else {
-    console.log("Nenhum tipo de dados chamado");
+  } else if (type === "feedback") {
+    schema = Joi.object({
+      nome: Joi.string().min(3).required(),
+      email: Joi.string().email().required(),
+      message: Joi.string().required(),
+    });
   }
 
   return schema.validate(data, { abortEarly: false });
