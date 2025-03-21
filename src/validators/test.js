@@ -20,6 +20,16 @@ const validation = (type, data) => {
       email: Joi.string().email().required(),
       message: Joi.string().required(),
     });
+  } else if (type === "forgot-password") {
+    schema = Joi.object({
+      email: Joi.string().email().required(),
+    });
+  } else if (type === "reset-password") {
+    schema = Joi.object({
+      newPassword: Joi.string().min(7).required(),
+    });
+  } else {
+    console.log("Tipo de formato Joi não encontrado!");
   }
 
   return schema.validate(data, { abortEarly: false });

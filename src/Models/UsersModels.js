@@ -8,6 +8,8 @@ const UsersSchema = new Schema({
   nome: String,
   email: String,
   password: String,
+  resetToken: String,
+  resetExpiredToken: Date,
 });
 
 const UsersModels = mongoose.model("users", UsersSchema);

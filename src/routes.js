@@ -18,5 +18,15 @@ routes.put(
   validateMiddleware("register"),
   UsersControllers.update
 );
+routes.post(
+  "/forgot-password",
+  validateMiddleware("forgot-password"),
+  UsersControllers.forgotPassword
+);
+routes.post(
+  "/reset-password/:token",
+  validateMiddleware("reset-password"),
+  UsersControllers.resetPassword
+);
 
 export { routes };

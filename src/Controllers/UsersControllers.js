@@ -1,8 +1,10 @@
-import { UsersModels } from "../models/UsersModels.js";
+import { UsersModels } from "../Models/UsersModels.js";
 import { hashPassword } from "../services/passwordService.js";
 import { comparePassword } from "../services/passwordService.js";
 import { errorResponse } from "../utils/errorResponse.js";
 import jwt from "jsonwebtoken";
+import { generateToken } from "../utils/generateResetTokenPassword.js";
+import { sendMail } from "../utils/sendMail.js";
 import "dotenv/config.js";
 
 class UsersControllers {
@@ -135,6 +137,64 @@ class UsersControllers {
       return response.json({ auth: true, token });
     } catch (err) {
       console.error("Erro ao logar com usuário", err.message);
+      errorResponse(response, 500, "Falha ao capturar requisição");
+    }
+  }
+
+  async forgotPassword(request, response) {
+    try {
+      const { email } = request.body;
+
+      const userAlreadyExists = await UsersModels.findOne({ email });
+
+      if (!userAlreadyExists) {
+        return errorResponse(response, 404, "Usuário não encontrado!");
+      }
+
+      const resetToken = generateToken();
+      const resetExpiredToken = Date.now() + 3600000;
+
+      userAlreadyExists.resetToken = resetToken;
+      userAlreadyExists.resetExpiredToken = resetExpiredToken;
+      await userAlreadyExists.save();
+
+      await sendMail(userAlreadyExists.email, resetToken);
+
+      return response.status(200).json({
+        message: "E-mail enviado com sucesso. Verifique o seu e-mail",
+      });
+    } catch (err) {
+      console.error("Erro ao envio de e-mail", err.message);
+      errorResponse(response, 500, "Falha ao capturar requisição");
+    }
+  }
+
+  async resetPassword(request, response) {
+    try {
+      const { token } = request.params;
+      const { newPassword } = request.body;
+
+      const userInfos = await UsersModels.findOne({
+        resetToken: token,
+        resetExpiredToken: { $gt: Date.now() },
+      });
+
+      if (!userInfos) {
+        return errorResponse(response, 401, "Token inválido ou expirado");
+      }
+
+      const newPasswordHash = await hashPassword(newPassword);
+
+      userInfos.password = newPasswordHash;
+      userInfos.resetToken = undefined;
+      userInfos.resetExpiredToken = undefined;
+      await userInfos.save();
+
+      return response
+        .status(200)
+        .json({ message: "Senha redefinida com sucesso!" });
+    } catch (err) {
+      console.error("Erro ao redefinir senha", err.message);
       errorResponse(response, 500, "Falha ao capturar requisição");
     }
   }
