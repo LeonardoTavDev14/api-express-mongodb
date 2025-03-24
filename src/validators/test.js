@@ -26,7 +26,7 @@ const validation = (type, data) => {
     });
   } else if (type === "reset-password") {
     schema = Joi.object({
-      newPassword: Joi.string().min(7).required(),
+      password: Joi.string().min(7).required(),
     });
   } else {
     console.log("Tipo de formato Joi não encontrado!");

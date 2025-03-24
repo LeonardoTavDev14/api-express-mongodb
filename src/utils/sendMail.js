@@ -9,7 +9,8 @@ const sendMail = async (email, resetToken) => {
     from: `${process.env.EMAIL_HOST}`,
     to: email,
     subject: "Redefinição de senha",
-    text: `Clique no link para redefinir sua senha: ${linkReset}`,
+    text: `Clique no link abaixo para redefinir sua senha`,
+    html: `<a href="${linkReset}">Redefinir Senha<a/>`,
   };
 
   try {

@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "Leonardo Tavares - LeonardoTavDev14",
   "license": "ISC",
-  "description": "",
+  "description": "Back-end API",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",

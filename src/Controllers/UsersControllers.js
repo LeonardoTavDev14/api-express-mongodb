@@ -125,7 +125,7 @@ class UsersControllers {
         userAlreadyExists.password
       );
       if (!isPasswordValid)
-        return errorResponse(response, 400, "Senha incorreta");
+        return errorResponse(response, 400, "Senha ou e-mail incorretos");
 
       const token = jwt.sign(
         { objectIdentify: userAlreadyExists._id },
@@ -172,7 +172,7 @@ class UsersControllers {
   async resetPassword(request, response) {
     try {
       const { token } = request.params;
-      const { newPassword } = request.body;
+      const { password } = request.body;
 
       const userInfos = await UsersModels.findOne({
         resetToken: token,
@@ -183,11 +183,11 @@ class UsersControllers {
         return errorResponse(response, 401, "Token inválido ou expirado");
       }
 
-      const newPasswordHash = await hashPassword(newPassword);
+      const newPasswordHash = await hashPassword(password);
 
       userInfos.password = newPasswordHash;
-      userInfos.resetToken = undefined;
-      userInfos.resetExpiredToken = undefined;
+      userInfos.resetToken = null;
+      userInfos.resetExpiredToken = null;
       await userInfos.save();
 
       return response

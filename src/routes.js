@@ -23,7 +23,7 @@ routes.post(
   validateMiddleware("forgot-password"),
   UsersControllers.forgotPassword
 );
-routes.post(
+routes.put(
   "/reset-password/:token",
   validateMiddleware("reset-password"),
   UsersControllers.resetPassword
