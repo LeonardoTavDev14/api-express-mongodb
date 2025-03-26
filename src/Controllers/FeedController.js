@@ -1,10 +1,17 @@
 import { FeedModels } from "../Models/FeedModels.js";
+import { UsersModels } from "../Models/UsersModels.js";
 import { errorResponse } from "../utils/errorResponse.js";
 
 class FeedController {
   async create(request, response) {
     try {
       const { nome, email, message } = request.body;
+
+      const emailNotExists = await UsersModels.findOne({ email });
+
+      if (!emailNotExists) {
+        return errorResponse(response, 404, "E-mail inserido não registrado!");
+      }
 
       const emailAlreadyExists = await FeedModels.findOne({ email });
 
