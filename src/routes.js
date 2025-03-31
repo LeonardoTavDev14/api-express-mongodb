@@ -9,6 +9,7 @@ const routes = Router();
 routes.post("/users", validateMiddleware("register"), UsersControllers.create);
 routes.post("/login", validateMiddleware("login"), UsersControllers.login);
 routes.post("/feedback", validateMiddleware("feedback"), FeedController.create);
+routes.get("/admin/feedback", verifyToken, FeedController.list);
 routes.delete("/users/:id", verifyToken, UsersControllers.delete);
 routes.get("/users/:id", verifyToken, UsersControllers.getUserByID);
 routes.get("/users", verifyToken, UsersControllers.getAllUsers);
